@@ -17,7 +17,7 @@ Suiseiseki uses environmental variables for configuration. Here's our current li
 - `WEBHOOK_URL` - The Discord webhook URL that the program will post to. The program will explode if you don't set this. Note: This doesn't have to be a Discord webhook, but the formatting is currently setup so that it utilizes Discord rich embeds, and may not behave with other services.
 - `INFO_USERNAME` - The display name to go post the updates under. Defaults to "Suiseiseki". Setting this to a blank string will use the name given by the webhook.
 - `INFO_AVATARURL` - The URL of the image that will be the bot's avatar. Defaults to nothing. Setting this to a blank string will use the image given by the webhook.
-- `LOGGING_CONFIG` - ***⚠ HIGHLY IMPORTANT ⚠*** The location on disk where the logging configuration is stored. This is a [logging configuration](https://docs.python.org/3/library/logging.config.html#logging-config-dictschema) to configure python's logging.
+- `LOGGING_CONFIG` - ***⚠ HIGHLY IMPORTANT ⚠*** The location on disk where the logging configuration is stored. This is a [dictConfig](https://docs.python.org/3/library/logging.config.html#logging-config-dictschema) to configure python's logging.
 - `KEYDB_HOST` - The KeyDB hostname, generally either `localhost` or `keydb`, if hosting it locally or using docker respectively.
 - `KEYDB_PORT` - The KeyDB port number, set to a non-standard number by default (7089) because it didn't conflict with Windows' default port blocking.
 - `KEYDB_PASSWD` - The KeyDB password, by default null. Probably don't need this if you're containerized.
