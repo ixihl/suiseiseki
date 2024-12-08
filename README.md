@@ -21,6 +21,7 @@ Suiseiseki uses environmental variables for configuration. Here's our current li
 - `KEYDB_HOST` - The KeyDB hostname, generally either `localhost` or `keydb`, if hosting it locally or using docker respectively.
 - `KEYDB_PORT` - The KeyDB port number, set to a non-standard number by default (7089) because it didn't conflict with Windows' default port blocking.
 - `KEYDB_PASSWD` - The KeyDB password, by default null. Probably don't need this if you're containerized.
+- `KEYDB_EXPIRE_TIME` - Each ID that KeyDB stores is set to expire after this amount of time in seconds. The default is 4838400 seconds, or approximately 2 months.
 
 ## Notes
 - Currently the bot is *only* made to post update from *one* account's bluesky page to *one* webhook that takes *discords* rich embed formatting only. Maybe that'll change in the future, maybe not.
