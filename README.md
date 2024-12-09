@@ -22,6 +22,8 @@ Suiseiseki uses environmental variables for configuration. Here's our current li
 - `KEYDB_PORT` - The KeyDB port number, set to a non-standard number by default (7089) because it didn't conflict with Windows' default port blocking.
 - `KEYDB_PASSWD` - The KeyDB password, by default null. Probably don't need this if you're containerized.
 - `KEYDB_EXPIRE_TIME` - Each ID that KeyDB stores is set to expire after this amount of time in seconds. The default is 4838400 seconds, or approximately 2 months.
+- `DISCORD_PING_ROLE` - The Discord Role ID that'll be pinged in the message. Can be found by setting discord into Developer mode, right clicking on a user's role, and selecting "Copy Role ID".
+- `DISCORD_PING_ON_REPOST` - Ping the discord role on reposts. `true` if you want it on, `false` or nothing if you want it off.
 
 ## Notes
 - Currently the bot is *only* made to post update from *one* account's bluesky page to *one* webhook that takes *discords* rich embed formatting only. Maybe that'll change in the future, maybe not.

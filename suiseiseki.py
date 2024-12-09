@@ -14,6 +14,8 @@ BSKY_APP_URL = "https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed"
 BSKY_FILTER = os.environ.get('BSKY_FILTER') or "posts_no_replies"
 BSKY_UPDATE_TIME = int(os.environ.get('BSKY_UPDATE_TIME', 5*60))
 WEBHOOK_URL = os.environ.get('WEBHOOK_URL') or ""
+DISCORD_PING_ROLE = os.environ.get('DISCORD_PING_ROLE', "")
+DISCORD_PING_ON_REPOST = os.environ.get('DISCORD_PING_ON_REPOST', False)
 DISCORD_SLEEP_TIME = 0.3
 KEYDB_HOST = os.environ.get('KEYDB_HOST') or "localhost"
 KEYDB_PORT = int(os.environ.get('KEYDB_PORT', 6379))
@@ -55,7 +57,7 @@ def get_feed():
         "actor": PROFILE,
         "filter": BSKY_FILTER
     })
-    req = s.get("{APP_URL}?{qs}".format(APP_URL=BSKY_APP_URL, qs=qs))
+    req = s.get(f"{BSKY_APP_URL}?{qs}")
     try:
         req.raise_for_status()
     except requests.exceptions.HTTPError as e:
@@ -69,18 +71,18 @@ def embed_post(p):
     # please don't look too hard at my shame
     info["embeds"] = [{
         "author": {
-            "name": "{name} - @{handle}".format(name=p.get("author").get("displayName"),handle=p.get("author").get("handle")),
+            "name": f"{p.get("author").get("displayName")} - @{p.get("author").get("handle")}",
             "url": BSKY_PROFILE_URL.format(handle=p.get("author").get("handle")),
-            "icon_url": p.get("author").get("avatar"),
+            "icon_url": f"{p.get("author").get("avatar")}",
         },
-        "title": "{handle} posted.".format(handle=p.get("author").get("handle")),
+        "title": f"{p.get("author").get("handle")} posted.",
         "description": p.get("record").get("text", ""),
         "url": BSKY_POST_URL.format(handle=p.get("author").get("handle"), id=p.get("uri").split("/")[-1]),
         "timestamp": p.get("record").get("createdAt")
     }]
     if p.get("record").get("embed", {}).get("$type", "") == "app.bsky.embed.video":
         info["embeds"][0]["fields"] = [{
-            "name": "{name} posted a video. Click the link to view it.".format(name=p.get("author").get("displayName")),
+            "name": f"{p.get("author").get("displayName")} posted a video. Click the link to view it.",
             "value": ""
         }]
         info["embeds"][0]["image"] = {
@@ -91,6 +93,10 @@ def embed_post(p):
         info["embeds"][0]["image"] = {
             "url": p.get("embed").get("images")[0].get("fullsize")
         }
+    # Ping a specific role if we have it
+    if DISCORD_PING_ROLE:
+        if p.get("author").get("did") == PROFILE or DISCORD_PING_ON_REPOST:
+            info["content"] = f"<@&{DISCORD_PING_ROLE}>"
     req = s.post(WEBHOOK_URL, json=info)
     try:
         req.raise_for_status()
@@ -115,7 +121,7 @@ if __name__ == '__main__':
         # XXX: Make this do as much of the posting in one go as possible
         # this is limited to batches of 10 iirc
         for p in sorted(unposted):
-            logging.info("Posting post with cid {}".format(p))
+            logging.info(f"Posting post with cid `{p.decode()}`")
             embed_post(feed_object[p])
             db.sadd("posted_ids", p)
             db.expiremember("posted_ids", p, KEYDB_EXPIRE_TIME)
