@@ -60,7 +60,7 @@ def get_feed():
     req = s.get(f"{BSKY_APP_URL}?{qs}")
     try:
         req.raise_for_status()
-    except requests.exceptions.HTTPError as e:
+    except requests.exceptions.RequestException as e:
         logging.error("Error querying BlueSky API", e)
         return [] # XXX: Fail silently here, maybe not a good idea?
     feed = req.json().get("feed")
@@ -98,10 +98,7 @@ def embed_post(p):
         if p.get("author").get("did") == PROFILE or DISCORD_PING_ON_REPOST:
             info["content"] = f"<@&{DISCORD_PING_ROLE}>"
     req = s.post(WEBHOOK_URL, json=info)
-    try:
-        req.raise_for_status()
-    except requests.exceptions.HTTPError as e:
-        logging.error("Error posting to discord", e)
+    return req.raise_for_status()
 
 if __name__ == '__main__':
     logging.info("Suiseiseki starting")
@@ -116,13 +113,17 @@ if __name__ == '__main__':
         feed_object = {x.get("post").get("cid").encode("utf8"): x.get("post") for x in feed}
         unposted = posts.symmetric_difference(ids)
         # making a reasonable assumption that the id only increments
-        # this doesn't affect much but i want the bot 
+        # this doesn't affect much but i want the bot
         # to post in as chronological an order as possible
         # XXX: Make this do as much of the posting in one go as possible
         # this is limited to batches of 10 iirc
         for p in sorted(unposted):
             logging.info(f"Posting post with cid `{p.decode()}`")
-            embed_post(feed_object[p])
+            try:
+                embed_post(feed_object[p])
+            except requests.exceptions.RequestException as e:
+                logging.error("Error posting to discord", e)
+                continue
             db.sadd("posted_ids", p)
             db.expiremember("posted_ids", p, KEYDB_EXPIRE_TIME)
             time.sleep(DISCORD_SLEEP_TIME)
