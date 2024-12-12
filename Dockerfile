@@ -5,6 +5,6 @@ WORKDIR /usr/src/suiseiseki
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./suiseiseki.py .
+COPY . .
 
-CMD [ "python", "./suiseiseki.py" ]
+CMD [ "python", "-m", "suiseiseki" ]

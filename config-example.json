@@ -1,0 +1,6 @@
+{
+    "useragent": "Ixihl's Discord Bot (v0.0.2) <ixihl@hime.watch>",
+    "formatters": [
+        "discord"
+    ]
+}
