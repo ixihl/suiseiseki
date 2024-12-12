@@ -3,6 +3,8 @@ import logging
 import importlib
 import requests
 
+logger = logging.getLogger("suiseiseki")
+
 class BaseFormatter(object):
     __name__ = "base_formatter"
     __configuration_keys__ = set()
@@ -27,7 +29,7 @@ class BaseFormatter(object):
             raise KeyError(f"[{self.__name__}][config] Couldn't obtain {len(errors)} keys: {", ".join(errors)}.")
         for key in self.__optional_configuration_keys__:
             config[key] = os.environ.get(key, None)
-        logging.info(f"[{self.__name__}][config] got {len(config)} configuration options.")
+        logger.info(f"[{self.__name__}][config] got {len(config)} configuration options.")
         return config
     def should_post(self, post, reason):
         return NotImplemented
