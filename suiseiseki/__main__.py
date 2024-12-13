@@ -21,26 +21,6 @@ KEYDB_EXPIRE_TIME = int(os.environ.get('KEYDB_EXPIRE_TIME', 60*60*24*7*4*2)) # a
 LOGGING_CONFIG = os.environ.get('LOGGING_CONFIG') or ''
 CONFIG_FILE = os.environ.get('CONFIG_FILE') or ''
 
-if LOGGING_CONFIG == "":
-    raise ValueError("LOGGING_CONFIG must be set.")
-
-with open(LOGGING_CONFIG, "r") as f:
-    logging_config = json.load(f)
-
-logger = logging.getLogger("suiseiseki")
-logging.config.dictConfig(logging_config)
-
-if CONFIG_FILE == "":
-    raise ValueError("CONFIG_FILE must be set.")
-
-with open(CONFIG_FILE, "r") as f:
-    config = json.load(f)
-
-s = requests.Session()
-s.headers.update({
-    'User-Agent': config.get("useragent", 'Ixihl\'s Discord Bot (v0.0.2) <ixihl@hime.watch>')
-})
-
 formatters = {}
 for name, cls in suiseiseki.formatter.load_formatters().items():
     formatters[name] = cls(s)
@@ -59,13 +39,32 @@ def get_feed():
     feed = req.json().get("feed")
     return feed
 
-def embed_post(p):
-    ...
+def main():
+    if LOGGING_CONFIG == "":
+        raise ValueError("LOGGING_CONFIG must be set.")
 
-if __name__ == '__main__':
+    with open(LOGGING_CONFIG, "r") as f:
+        logging_config = json.load(f)
+
+    logger = logging.getLogger("suiseiseki")
+    logging.config.dictConfig(logging_config)
+
+    if CONFIG_FILE == "":
+        raise ValueError("CONFIG_FILE must be set.")
+
+    with open(CONFIG_FILE, "r") as f:
+        config = json.load(f)
+
     logger.info("Suiseiseki starting")
+
+    s = requests.Session()
+    s.headers.update({
+        'User-Agent': config.get("useragent", 'Ixihl\'s Discord Bot (v0.0.2) <ixihl@hime.watch>')
+    })
+
     logger.info("KeyDB init")
     db = KeyDB(host=KEYDB_HOST, port=KEYDB_PORT)
+
     posts = set()
     if db.smembers("posted_ids"):
         posts.update(db.smembers("posted_ids"))
@@ -93,3 +92,6 @@ if __name__ == '__main__':
             db.expiremember("posted_ids", p, KEYDB_EXPIRE_TIME)
         posts.update(db.smembers("posted_ids"))
         time.sleep(BSKY_UPDATE_TIME)
+
+if __name__ == '__main__':
+    main()
