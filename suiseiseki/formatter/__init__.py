@@ -12,5 +12,5 @@ def load_formatters():
         formatter = importlib.import_module(f'suiseiseki.formatter.{name}')
         if formatter.__dict__.get("__formatter__"):
             formatters[name] = formatter.__formatter__
-    logger.info(f"[formatter] Loaded {len(formatters)} formatter{"" if len(formatters) is 1 else "s"}: {", ".join(formatters.keys())}.")
+    logger.info(f"[formatter] Loaded {len(formatters)} formatter{"" if len(formatters) == 1 else "s"}: {", ".join(formatters.keys())}.")
     return formatters
