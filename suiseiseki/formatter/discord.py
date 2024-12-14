@@ -44,6 +44,18 @@ class DiscordFormatter(BaseFormatter):
             body["embeds"][0]["image"] = {
                 "url": post.get("embed").get("thumbnail")
             }
+        # there's records, there's embeds, and then there's records with embeds
+        if post.get("record").get("embed", {}).get("$type", "") == "app.bsky.embed.recordWithMedia":
+            rec_type = post.get("record").get("embed").get("media").get("$type")
+            if rec_type == "app.bsky.embed.images":
+                body["embeds"][0]["image"] = {
+                    "url": post.get("embed").get("images")[0].get("fullsize")
+                }
+            if rec_type == "app.bsky.embed.video":
+                # XXX: Why is this different? What corner-case am I missing here exactly?
+                body["embeds"][0]["image"] = {
+                    "url": post.get("embed").get("media").get("thumbnail")
+                }
         # To ping or not to ping
         if self.config.get("DISCORD_PING_ROLE"):
             if not repost or self.config.get("DISCORD_PING_ON_REPOST"):
