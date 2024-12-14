@@ -21,7 +21,7 @@ KEYDB_EXPIRE_TIME = int(os.environ.get('KEYDB_EXPIRE_TIME', 60*60*24*7*4*2)) # a
 LOGGING_CONFIG = os.environ.get('LOGGING_CONFIG') or ''
 CONFIG_FILE = os.environ.get('CONFIG_FILE') or ''
 
-def get_feed():
+def get_feed(s):
     qs = urlencode({
         "actor": BSKY_PROFILE_DID,
         "filter": BSKY_FILTER
@@ -69,7 +69,7 @@ def main():
     if db.smembers("posted_ids"):
         posts.update(db.smembers("posted_ids"))
     while True:
-        feed = get_feed()
+        feed = get_feed(s)
         ids = set(map(lambda x: x.get("post").get("cid").encode("utf8"), feed))
         feed_object = {x.get("post").get("cid").encode("utf8"): (x.get("post"), x.get("reason")) for x in feed}
         unposted = posts.symmetric_difference(ids)
