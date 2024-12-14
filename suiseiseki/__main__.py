@@ -21,10 +21,6 @@ KEYDB_EXPIRE_TIME = int(os.environ.get('KEYDB_EXPIRE_TIME', 60*60*24*7*4*2)) # a
 LOGGING_CONFIG = os.environ.get('LOGGING_CONFIG') or ''
 CONFIG_FILE = os.environ.get('CONFIG_FILE') or ''
 
-formatters = {}
-for name, cls in suiseiseki.formatter.load_formatters().items():
-    formatters[name] = cls(s)
-
 def get_feed():
     qs = urlencode({
         "actor": BSKY_PROFILE_DID,
@@ -61,6 +57,10 @@ def main():
     s.headers.update({
         'User-Agent': config.get("useragent", 'Ixihl\'s Discord Bot (v0.0.2) <ixihl@hime.watch>')
     })
+
+    formatters = {}
+    for name, cls in suiseiseki.formatter.load_formatters().items():
+        formatters[name] = cls(s)
 
     logger.info("KeyDB init")
     db = KeyDB(host=KEYDB_HOST, port=KEYDB_PORT)
