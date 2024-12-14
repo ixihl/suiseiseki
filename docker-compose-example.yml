@@ -2,20 +2,27 @@ version: "3.4"
 services:
   suiseiseki:
     image: "suiseiseki-bot:latest"
-    restart: no
+    restart: unless-stopped
     depends_on:
       - keydb
     networks:
       - suiseiseki
     environment:
       BSKY_PROFILE_DID: "did:plc:abcdefghijklmnopqrstuvwx"
+      BSKY_POST_URL: "https://bsky.app/profile/{handle}/post/{id}"
+      BSKY_PROFILE_URL:  "https://bsky.app/profile/{handle}"
       BSKY_FILTER: "posts_no_replies"
-      WEBHOOK_URL: "https://discord.com/api/webhooks/....."
       KEYDB_HOST: "keydb"
       KEYDB_PORT: 7089
+      KEYDB_PASSWD: ""
+      INFO_USERNAME: "Suiseiseki"
+      INFO_AVATARURL: ""
+      DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/....."
       LOGGING_CONFIG: "/etc/suiseiseki/logging.json"
+      CONFIG_FILE: "/etc/suiseiseki/config.json"
     volumes:
       - ./logging.json:/etc/suiseiseki/logging.json
+      - ./config.json:/etc/suiseiseki/config.json
   keydb:
     image: "eqalpha/keydb:latest"
     command: keydb-server /etc/keydb/keydb.conf
