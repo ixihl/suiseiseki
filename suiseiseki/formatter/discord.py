@@ -67,7 +67,7 @@ class DiscordFormatter(BaseFormatter):
         return body
     def post(self, post, reason):
         body = self.format(post, reason)
-        req = self.session.post(self.config.get("DISCORD_WEBHOOK_URL"), json=info)
+        req = self.session.post(self.config.get("DISCORD_WEBHOOK_URL"), json=body)
         req.raise_for_status()
         time.sleep(self.config.get("DISCORD_SLEEP_TIME", 0.5))
         return req.text
