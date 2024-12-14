@@ -12,7 +12,7 @@ class DiscordFormatter(BaseFormatter):
             "username": self.config.get("INFO_USERNAME", ""),
             "avatar_url": self.config.get("INFO_AVATARURL", ""),
             "content": "",
-            "embeds": []
+            "embeds": [{}]
         }
         body["embeds"][0] = {
             "author": {
