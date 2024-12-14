@@ -6,7 +6,7 @@ Suiseiseki is a self-hosted bot to post status updates from BlueSky to a Discord
 This bot is intended to run inside a docker instance.
 To build the container:
 `docker build . -t suiseiseki-bot`
-Then copy and edit both the keydb conf and logger json (if you are unsure about the settings, they can be left as is).
+Then copy and edit the keydb conf, config json, and logger json (if you are unsure about the settings, they can be left as is).
 Copy and edit the docker-compose-example.yml file, save it as docker-compose.yml, and run `docker compose up` on it. Alternatively, you can use the .yml as the input for a stack in portainer.
 
 ## Environmental variables
