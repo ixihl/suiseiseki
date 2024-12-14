@@ -52,6 +52,10 @@ class DiscordFormatter(BaseFormatter):
                     "url": post.get("embed").get("images")[0].get("fullsize")
                 }
             if rec_type == "app.bsky.embed.video":
+                body["embeds"][0]["fields"] = [{
+                    "name": f"{post.get("author").get("displayName")} posted a video. Click the link to view it.",
+                    "value": ""
+                }]
                 # XXX: Why is this different? What corner-case am I missing here exactly?
                 body["embeds"][0]["image"] = {
                     "url": post.get("embed").get("media").get("thumbnail")
