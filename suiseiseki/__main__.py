@@ -60,7 +60,8 @@ def main():
 
     formatters = {}
     for name, cls in suiseiseki.formatter.load_formatters().items():
-        formatters[name] = cls(s)
+        if name in config.get("formatters", []):
+            formatters[name] = cls(s)
 
     logger.info("KeyDB init")
     db = KeyDB(host=KEYDB_HOST, port=KEYDB_PORT)
