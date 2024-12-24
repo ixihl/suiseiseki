@@ -32,9 +32,10 @@ class DiscordFormatter(BaseFormatter):
         # Image embed
         if post.get("record").get("embed", {}).get("$type", "") == "app.bsky.embed.images":
             # Assume only one, oh god
-            body["embeds"][0]["image"] = {
-                "url": post.get("embed").get("images")[0].get("fullsize")
-            }
+            if post.get("embed").get("images"):
+                body["embeds"][0]["image"] = {
+                    "url": post.get("embed").get("images")[0].get("fullsize")
+                }
         # Video embed
         if post.get("record").get("embed", {}).get("$type", "") == "app.bsky.embed.video":
             body["embeds"][0]["fields"] = [{
@@ -48,9 +49,10 @@ class DiscordFormatter(BaseFormatter):
         if post.get("record").get("embed", {}).get("$type", "") == "app.bsky.embed.recordWithMedia":
             rec_type = post.get("record").get("embed").get("media").get("$type")
             if rec_type == "app.bsky.embed.images":
-                body["embeds"][0]["image"] = {
-                    "url": post.get("embed").get("images")[0].get("fullsize")
-                }
+                if post.get("embed").get("images")
+                    body["embeds"][0]["image"] = {
+                        "url": post.get("embed").get("images")[0].get("fullsize")
+                    }
             if rec_type == "app.bsky.embed.video":
                 body["embeds"][0]["fields"] = [{
                     "name": f"{post.get("author").get("displayName")} posted a video. Click the link to view it.",
