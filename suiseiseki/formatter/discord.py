@@ -49,7 +49,7 @@ class DiscordFormatter(BaseFormatter):
         if post.get("record").get("embed", {}).get("$type", "") == "app.bsky.embed.recordWithMedia":
             rec_type = post.get("record").get("embed").get("media").get("$type")
             if rec_type == "app.bsky.embed.images":
-                if post.get("embed").get("images")
+                if post.get("embed").get("images"):
                     body["embeds"][0]["image"] = {
                         "url": post.get("embed").get("images")[0].get("fullsize")
                     }
